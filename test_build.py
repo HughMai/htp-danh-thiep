@@ -40,6 +40,10 @@ for p in PEOPLE:
     check(f"TEL;TYPE=CELL,VOICE,pref:{intl(p['phone'])}" in unfolded, f"{s}: vcf main phone")
     check(f"FN:{p['contact']}" in unfolded, f"{s}: vcf name '{p['contact']}'")
     check("PHOTO;ENCODING=b;TYPE=JPEG:/9j/" in unfolded, f"{s}: vcf photo")
+    props = {l.split(":")[0].split(";")[0] for l in unfolded.splitlines()}
+    check(not props & {"ADR", "NOTE", "URL", "X-SOCIALPROFILE"},
+          f"{s}: vcf slim (no ADR/NOTE/URL) so iPhone shows 'Tạo liên hệ mới' without scrolling")
+    check('id="ios-hint" hidden' in page and "Tạo liên hệ mới" in page, f"{s}: iPhone save hint present")
 
     doc = fitz.open(PRINT / f"{s}.pdf")
     size = [round(v / 72 * 25.4) for v in (doc[0].rect.width, doc[0].rect.height)]

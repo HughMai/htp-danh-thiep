@@ -112,15 +112,10 @@ def vcard(p, photo_b64):
     ]
     if p["zalo"] != p["phone"]:
         lines.append(f"TEL;TYPE=WORK,VOICE:{intl(p['zalo'])}")
+    # Kept short on purpose: no address / website / note. Each extra field (the address adds a
+    # map) pushes iPhone's "Tạo liên hệ mới" button below the fold, and people tap ✓ instead,
+    # which only closes the preview. Address, website, Facebook are on the page.
     lines += [
-        f"ADR;TYPE=WORK:;;{vtext('235–237 Võ Văn Kiệt (281 cũ)')};{vtext('Bình Thủy')};"
-        f"{vtext('Cần Thơ')};;Việt Nam",
-        f"URL:{WEBSITE}",
-    ]
-    if p["facebook"]:
-        lines.append(f"X-SOCIALPROFILE;TYPE=facebook:{p['facebook']}")
-    lines += [
-        f"NOTE:{vtext(PRODUCTS + ' — Zalo ' + show(p['zalo']))}",
         f"PHOTO;ENCODING=b;TYPE=JPEG:{photo_b64}",
         "END:VCARD",
     ]
@@ -172,6 +167,9 @@ h1 { font: 800 34px/1.05 "Barlow C", "Arial Narrow", sans-serif; text-transform:
   font: 700 19px/1.1 "Barlow C", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .03em; }
 .btn svg { width: 22px; height: 22px; flex: none; }
 .btn small { display: block; font: 600 13px/1.2 system-ui, sans-serif; text-transform: none; letter-spacing: 0; opacity: .85; }
+.hint { margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: #FFF6D6;
+  border: 1px solid #F5D77A; font-size: 14px; line-height: 1.4; color: var(--ink); }
+.hint[hidden] { display: none; }
 .save { margin-top: 16px; background: var(--gold); color: var(--brown); box-shadow: 0 2px 0 var(--gold-d); }
 .stack { display: grid; gap: 10px; margin-top: 10px; }
 .call { background: var(--brown); color: #fff; }
@@ -232,6 +230,8 @@ def person_page(p):
   <p class="role">{esc(p['title'])}</p>
  </section>
  <a class="btn save" href="../{p['slug']}.vcf">{icon("save")}<span>Lưu vào danh bạ</span></a>
+ <p class="hint" id="ios-hint" hidden>iPhone: bấm <b>Tạo liên hệ mới</b> ở cuối màn hình, rồi bấm <b>✓</b> để lưu.
+  Nút ✓ ở màn hình đầu tiên chỉ là đóng lại.</p>
  <div class="stack">
   <a class="btn call" href="tel:{intl(p['phone'])}">{icon("call")}<span>Gọi {show(p['phone'])}</span></a>
   <a class="btn zalo" href="https://zalo.me/{p['zalo']}">{icon("chat")}<span>Nhắn Zalo{zalo_note}</span></a>{fb}
@@ -243,6 +243,10 @@ def person_page(p):
  </nav>
  {FOOTER}
 </main>
+<script>
+if (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1))
+  document.getElementById("ios-hint").hidden = false;
+</script>
 </body>
 </html>
 """
