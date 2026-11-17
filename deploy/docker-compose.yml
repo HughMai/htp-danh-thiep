@@ -1,0 +1,16 @@
+# /opt/htp-card on Hermes. Joins the main Caddy's network; no ports exposed.
+services:
+  card-site:
+    image: caddy:2
+    container_name: card-site
+    restart: unless-stopped
+    mem_limit: 64m
+    volumes:
+      - ./site:/srv:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - caddy_shared
+
+networks:
+  caddy_shared:
+    external: true

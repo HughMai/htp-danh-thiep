@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>Danh thiếp — Mai Văn Trung</title>
+<style>
+@font-face { font-family: "Barlow C"; font-weight: 700; font-display: swap;
+  src: url("../fonts/barlow-condensed-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Barlow C"; font-weight: 700; font-display: swap;
+  src: url("../fonts/barlow-condensed-700-vietnamese.woff2") format("woff2");
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: "Barlow C"; font-weight: 800; font-display: swap;
+  src: url("../fonts/barlow-condensed-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Barlow C"; font-weight: 800; font-display: swap;
+  src: url("../fonts/barlow-condensed-800-vietnamese.woff2") format("woff2");
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@page { size: 94mm 58mm; margin: 0; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 94mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: "Segoe UI", Arial, sans-serif; color: #2A1A10; }
+.pg { width: 94mm; height: 58mm; position: relative; overflow: hidden; page-break-after: always; }
+.pg:last-child { page-break-after: auto; }
+/* safe area = 2mm bleed + 3mm margin */
+.front { background: #fff; }
+.front .logo { position: absolute; left: 6mm; top: 6mm; width: 40mm; }
+.front .who { position: absolute; left: 6mm; right: 6mm; top: 26.5mm; }
+.front h1 { font: 800 17pt/1 "Barlow C", sans-serif; text-transform: uppercase; color: #4A2511; letter-spacing: .01em; }
+.front .role { margin-top: 1mm; font-size: 7.6pt; font-weight: 600; color: #7A6656; }
+.front .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 13mm; background: #4A2511;
+  display: flex; align-items: center; gap: 4mm; padding: 0 6mm 2mm; }
+.front .bar .n { font: 800 15pt/1 "Barlow C", sans-serif; color: #F5B800; letter-spacing: .02em; }
+.front .bar .z { font-size: 7.4pt; color: #fff; line-height: 1.2; }
+.front .bar .z b { font-weight: 700; }
+.front .stripe { position: absolute; right: 0; top: 0; width: 12mm; height: 45mm;
+  background: repeating-linear-gradient(180deg, #F5B800 0 2.2mm, #fff 2.2mm 3mm); opacity: .9; }
+.back { background: #4A2511; color: #fff; }
+.back .txt { position: absolute; left: 6mm; top: 6mm; right: 33mm; }
+.back .prod { font: 800 12.5pt/1.05 "Barlow C", sans-serif; text-transform: uppercase; color: #F5B800; }
+.back .tag { margin-top: 1.4mm; font-size: 7pt; color: #EADFD2; }
+.back .addr { position: absolute; left: 6mm; right: 33mm; bottom: 6mm; font-size: 6.6pt; line-height: 1.35; color: #fff; }
+.back .addr b { color: #F5B800; font-weight: 700; }
+.back .qr { position: absolute; right: 6mm; top: 6mm; width: 24mm; text-align: center; }
+.back .qr .box { background: #fff; border-radius: 1.6mm; padding: 1.2mm; }
+.back .qr .box svg { display: block; width: 100%; height: auto; }
+.back .qr p { margin-top: 1.4mm; font-size: 6.2pt; line-height: 1.25; color: #fff; }
+.back .qr p b { display: block; color: #F5B800; font: 700 8pt/1.1 "Barlow C", sans-serif; text-transform: uppercase; letter-spacing: .03em; }
+.nfc { display: inline-block; width: 3.4mm; height: 3.4mm; vertical-align: -0.6mm; margin-right: .6mm; }
+</style></head>
+<body>
+<section class="pg front">
+ <div class="stripe"></div>
+ <img class="logo" src="../site/assets/logo.png" alt="">
+ <div class="who"><h1>Mai Văn Trung</h1><p class="role">Giám đốc</p></div>
+ <div class="bar"><span class="n">0963 021 639</span><span class="z"><b>Zalo</b> 0913 574 077</span></div>
+</section>
+<section class="pg back">
+ <div class="txt"><p class="prod">Cửa cuốn<br>Cửa kéo<br>Cửa nhôm kính</p>
+  <p class="tag">Sản xuất &amp; lắp đặt tại Cần Thơ từ 2005</p></div>
+ <p class="addr">235–237 Võ Văn Kiệt (281 cũ)<br>P. Bình Thủy, TP. Cần Thơ<br><b>hungthanhphat.vn</b></p>
+ <div class="qr"><div class="box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" class="segno"><path class="qrline" stroke="#2a1a10" d="M0 0.5h7m3 0h1m2 0h2m1 0h1m2 0h1m2 0h7m-29 1h1m5 0h1m1 0h1m5 0h2m1 0h1m1 0h1m2 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m4 0h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m3 0h6m2 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h4m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m4 0h1m1 0h1m1 0h3m1 0h1m2 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h3m1 0h2m1 0h2m2 0h1m-21 1h1m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h2m1 0h2m3 0h1m2 0h1m-28 1h2m1 0h3m3 0h1m1 0h1m2 0h1m1 0h2m2 0h4m1 0h1m2 0h1m-29 1h1m2 0h1m1 0h5m3 0h1m2 0h1m1 0h1m2 0h1m2 0h1m1 0h3m-27 1h1m1 0h1m2 0h2m3 0h1m3 0h4m1 0h2m4 0h1m-28 1h3m2 0h4m2 0h2m2 0h3m2 0h3m2 0h1m1 0h2m-29 1h1m1 0h4m1 0h1m4 0h2m2 0h3m1 0h3m2 0h1m2 0h1m-28 1h2m1 0h3m1 0h3m1 0h1m1 0h1m5 0h1m4 0h1m1 0h2m-27 1h1m1 0h1m3 0h4m1 0h5m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m-28 1h2m1 0h4m1 0h3m1 0h1m1 0h1m2 0h7m1 0h1m1 0h2m-27 1h2m1 0h1m1 0h1m6 0h1m1 0h1m3 0h1m1 0h1m2 0h2m1 0h1m-29 1h1m1 0h1m1 0h1m1 0h4m2 0h2m2 0h2m2 0h5m2 0h2m-28 1h2m2 0h1m1 0h2m3 0h1m4 0h1m1 0h2m2 0h1m1 0h1m1 0h1m-28 1h1m1 0h2m1 0h5m7 0h1m2 0h5m-17 1h3m1 0h2m2 0h3m1 0h1m3 0h1m1 0h3m-29 1h7m2 0h1m2 0h1m1 0h1m1 0h2m1 0h2m1 0h1m1 0h2m1 0h2m-29 1h1m5 0h1m2 0h1m1 0h1m1 0h5m2 0h1m3 0h2m2 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m2 0h1m2 0h5m3 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h2m1 0h1m1 0h1m3 0h1m2 0h2m1 0h3m-29 1h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m2 0h1m1 0h2m2 0h3m2 0h1m-29 1h1m5 0h1m3 0h2m1 0h1m2 0h2m1 0h2m1 0h1m1 0h1m2 0h1m-28 1h7m1 0h2m1 0h1m3 0h6m3 0h1m2 0h2"/></svg>
+</div>
+  <p><b><svg class="nfc" viewBox="0 0 24 24" fill="none" stroke="#F5B800" stroke-width="2.4" stroke-linecap="round"><path d="M6 8.5a5 5 0 0 1 0 7"/><path d="M10 6a9 9 0 0 1 0 12"/><path d="M14 3.5a13 13 0 0 1 0 17"/></svg>Chạm hoặc quét</b>để lưu số vào máy</p></div>
+</section>
+</body></html>

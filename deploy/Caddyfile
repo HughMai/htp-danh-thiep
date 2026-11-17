@@ -1,0 +1,8 @@
+# Inner Caddy for card-site container. TLS is done by the main Caddy (/opt/caddy).
+:80 {
+	root * /srv
+	file_server
+	@vcf path *.vcf
+	header @vcf Content-Type "text/vcard; charset=utf-8"
+	header Cache-Control "public, max-age=300"
+}
