@@ -1,31 +1,32 @@
 """HTP Door — danh thiếp NFC.
 
 One source of truth (PEOPLE below) -> everything else:
-  site/<slug>/index.html   the page an NFC tap / QR scan opens
-  site/<slug>.vcf          "Lưu danh bạ" contact file (photo = HTP door mark)
-  site/index.html          team page
+  docs/<slug>/index.html   the page an NFC tap / QR scan opens
+  docs/<slug>.vcf          "Lưu danh bạ" contact file (photo = HTP door mark)
+  docs/index.html          team page
   print/<slug>.pdf         card for the print shop: 2 pages (front, back), 94x58mm = 90x54 + 2mm bleed
 
 Run:  PYTHONIOENCODING=utf-8 python build.py
-Edit a person -> run again -> redeploy site/ (see README). The chip/QR never changes:
-it holds BASE/<slug>, so cards already handed out keep working.
+Edit a person -> run again -> commit + push (GitHub Pages redeploys). The chip/QR never changes:
+it holds BASE/<slug>/, so cards already handed out keep working.
 """
 import base64
 import html
 import io
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 
 import segno
 from PIL import Image
 
 HERE = Path(__file__).resolve().parent
-SITE = HERE / "site"
+SITE = HERE / "docs"          # GitHub Pages serves main:/docs
 PRINT = HERE / "print"
 EDGE = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 
-BASE = "https://card.hungthanhphat.vn"   # what the chip + QR hold. Never change once printed.
+BASE = "https://hughmai.github.io/htp-danh-thiep"   # GitHub Pages. Chip + QR hold BASE/<slug>/ — never change once printed.
 
 COMPANY = "Hưng Thành Phát Door"
 ADDRESS = "235–237 Võ Văn Kiệt (281 cũ), P. Bình Thủy, TP. Cần Thơ"
@@ -39,7 +40,7 @@ PEOPLE = [
          phone="0963021639", zalo="0913574077", facebook=None,
          contact="Mai Văn Trung (HTP Door)"),
     dict(slug="hai", name="Hải", title="Kỹ thuật viên cửa cuốn, cửa kéo",
-         phone="0913080060", zalo="0913080060", facebook=None,     # Zalo = same number (assumed)
+         phone="0913080060", zalo="0913080060", facebook=None,
          contact="Hải (Cửa cuốn HTP)"),
     dict(slug="duong", name="Dương", title="Kỹ thuật viên nhôm kính",
          phone="0973695058", zalo="0973695058",
@@ -50,6 +51,10 @@ PEOPLE = [
 
 def show(num):          # 0963021639 -> 0963 021 639
     return f"{num[:4]} {num[4:7]} {num[7:]}"
+
+
+def card_url(p):      # what goes on the NFC chip and in the QR
+    return f"{BASE}/{p['slug']}/"
 
 
 def intl(num):          # 0963021639 -> +84963021639
@@ -218,7 +223,7 @@ def person_page(p):
           if p["facebook"] else "")
     zalo_note = f"<small>{show(p['zalo'])}</small>" if p["zalo"] != p["phone"] else ""
     return head(f"{p['name']} — {p['title']} · HTP Door",
-                f"{p['title']} · {COMPANY} · {PRODUCTS} · Cần Thơ", f"{BASE}/{p['slug']}", "../") + f"""
+                f"{p['title']} · {COMPANY} · {PRODUCTS} · Cần Thơ", card_url(p), "../") + f"""
 <body>
 <main>
  <section class="top">
@@ -317,7 +322,7 @@ def card_html(p):
 <body>
 <section class="pg front">
  <div class="stripe"></div>
- <img class="logo" src="../site/assets/logo.png" alt="">
+ <img class="logo" src="../docs/assets/logo.png" alt="">
  <div class="who"><h1>{esc(p['name'])}</h1><p class="role">{esc(p['title'])}</p></div>
  <div class="bar"><span class="n">{show(p['phone'])}</span><span class="z">{zalo_line}</span></div>
 </section>
@@ -325,7 +330,7 @@ def card_html(p):
  <div class="txt"><p class="prod">Cửa cuốn<br>Cửa kéo<br>Cửa nhôm kính</p>
   <p class="tag">Sản xuất &amp; lắp đặt tại Cần Thơ từ 2005</p></div>
  <p class="addr">235–237 Võ Văn Kiệt (281 cũ)<br>P. Bình Thủy, TP. Cần Thơ<br><b>hungthanhphat.vn</b></p>
- <div class="qr"><div class="box">{qr_svg(f"{BASE}/{p['slug']}")}</div>
+ <div class="qr"><div class="box">{qr_svg(card_url(p))}</div>
   <p><b>{NFC_SVG}Chạm hoặc quét</b>để lưu số vào máy</p></div>
 </section>
 </body></html>
@@ -333,9 +338,16 @@ def card_html(p):
 
 
 def pdf(html_path, out):
-    subprocess.run([EDGE, "--headless", "--disable-gpu", "--no-first-run", "--no-pdf-header-footer",
-                    "--run-all-compositor-stages-before-draw", "--virtual-time-budget=4000",
-                    f"--print-to-pdf={out}", html_path.as_uri()], check=True, capture_output=True)
+    # Own profile dir: with the default one, a running Edge window swallows the job and
+    # no PDF is written (silently keeping the old file). Delete first so a miss can't pass.
+    out.unlink(missing_ok=True)
+    with tempfile.TemporaryDirectory() as prof:
+        subprocess.run([EDGE, "--headless", "--disable-gpu", "--no-first-run", "--no-pdf-header-footer",
+                        f"--user-data-dir={prof}", "--run-all-compositor-stages-before-draw",
+                        "--virtual-time-budget=4000", f"--print-to-pdf={out}", html_path.as_uri()],
+                       check=True, capture_output=True)
+    if not out.exists():
+        raise SystemExit(f"Edge wrote no PDF: {out}")
 
 
 # ---------------------------------------------------------------- main
@@ -344,17 +356,26 @@ def main():
         shutil.rmtree(SITE)
     SITE.mkdir()
     shutil.copytree(HERE / "fonts", SITE / "fonts")
+    (SITE / ".nojekyll").write_text("")
     photo = make_images()
     (SITE / "index.html").write_text(team_page(), encoding="utf-8")
-    PRINT.mkdir(exist_ok=True)
-    for p in PEOPLE:
+    for p in PEOPLE:                                   # web first: never blocked by a PDF
         (SITE / p["slug"]).mkdir()
         (SITE / p["slug"] / "index.html").write_text(person_page(p), encoding="utf-8")
         (SITE / f"{p['slug']}.vcf").write_bytes(vcard(p, photo).encode("utf-8"))
+        print(f"web {p['slug']:6} {card_url(p)}")
+    PRINT.mkdir(exist_ok=True)
+    locked = []
+    for p in PEOPLE:
         h = PRINT / f"{p['slug']}.html"
         h.write_text(card_html(p), encoding="utf-8")
-        pdf(h, PRINT / f"{p['slug']}.pdf")
-        print(f"ok  {p['slug']:6} {BASE}/{p['slug']}")
+        try:
+            pdf(h, PRINT / f"{p['slug']}.pdf")
+            print(f"pdf {p['slug']}")
+        except PermissionError:
+            locked.append(p["slug"])
+    if locked:
+        raise SystemExit(f"PDF open in another program, close it and re-run: {', '.join(locked)}")
 
 
 if __name__ == "__main__":

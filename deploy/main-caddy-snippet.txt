@@ -1,9 +1,0 @@
-# Append ONCE to /opt/caddy/Caddyfile, then:
-#   ssh hermes "docker exec caddy caddy validate --config /etc/caddy/Caddyfile && docker exec caddy caddy reload --config /etc/caddy/Caddyfile"
-card.hungthanhphat.vn {
-    reverse_proxy card-site:80
-}
-
-card.187-77-133-39.sslip.io {
-    reverse_proxy card-site:80
-}

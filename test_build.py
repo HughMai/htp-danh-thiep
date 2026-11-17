@@ -9,7 +9,7 @@ import fitz
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
-from build import BASE, PEOPLE, PRINT, SITE, intl  # noqa: E402
+from build import PEOPLE, PRINT, SITE, card_url, intl  # noqa: E402
 
 fails = []
 
@@ -47,7 +47,7 @@ for p in PEOPLE:
     pix = doc[1].get_pixmap(dpi=400)
     img = np.frombuffer(pix.samples, np.uint8).reshape(pix.height, pix.width, pix.n)[:, :, :3]
     found, _, _ = cv2.QRCodeDetector().detectAndDecode(np.ascontiguousarray(img))
-    check(found == f"{BASE}/{s}", f"{s}: printed QR decodes to {BASE}/{s} (got {found!r})")
+    check(found == card_url(p), f"{s}: printed QR decodes to {card_url(p)} (got {found!r})")
 
 print(f"\n{'ALL PASS' if not fails else f'{len(fails)} FAILED'}")
 sys.exit(1 if fails else 0)
